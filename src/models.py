@@ -189,8 +189,8 @@ class PlanoAcaoAnaliseResponsavel(BaseModel, table=True):
     __tablename__ = "plano_acao_analise_responsavel"
     
     plano_acao_analise_fk: int = Field(foreign_key=f"{db_schema}.plano_acao_analise.id_analise_plano_acao", primary_key=True)
-    nome_responsavel_analise_plano_acao: str
-    cargo_responsavel_analise_plano_acao: str
+    nome_responsavel_analise_plano_acao: str = Field(primary_key=True)
+    cargo_responsavel_analise_plano_acao: str = Field(primary_key=True)
 
 
 # Tabela plano_acao_dado_bancario

@@ -23,16 +23,16 @@ import datetime as dt
 
 # Importando Rotas
 from src.routers.programa import pg_router
-# from src.routers.programa_beneficiario import pgb_router
-# from src.routers.programa_acao_orcamentaria import pgao_router
-# from src.routers.plano_acao import pa_router
-# from src.routers.plano_acao_meta import pam_router
-# from src.routers.plano_acao_etapa import pae_router
-# from src.routers.plano_acao_analise import paa_router
-# from src.routers.plano_acao_parecer import pap_router
-# from src.routers.termo_execucao import tde_router
-# from src.routers.nota_credito import ndc_router
-# from src.routers.evento import evt_router
+from src.routers.programa_beneficiario import pgb_router
+from src.routers.programa_gestao_agil import pgga_router
+from src.routers.plano_acao import pa_router
+from src.routers.plano_acao_dado_bancario import padb_router
+from src.routers.plano_acao_meta import pam_router
+from src.routers.plano_acao_meta_acao import pama_router
+from src.routers.plano_acao_destinacao_recursos import padr_router
+from src.routers.plano_acao_analise import paa_router
+from src.routers.plano_acao_analise_responsavel import paar_router
+from src.routers.plano_acao_historico import pah_router
 # from src.routers.programacao_financeira import pfi_router
 # from src.routers.trf import trf_router
 
@@ -116,16 +116,16 @@ async def track_requests(request: Request, call_next):
 
 # Incluindo Rotas
 app.include_router(pg_router)
-# app.include_router(pgb_router)
-# app.include_router(pgao_router)
-# app.include_router(pa_router)
-# app.include_router(pam_router)
-# app.include_router(pae_router)
-# app.include_router(paa_router)
-# app.include_router(pap_router)
-# app.include_router(tde_router)
-# app.include_router(ndc_router)
-# app.include_router(evt_router)
+app.include_router(pgb_router)
+app.include_router(pgga_router)
+app.include_router(pa_router)
+app.include_router(padb_router)
+app.include_router(pam_router)
+app.include_router(pama_router)
+app.include_router(padr_router)
+app.include_router(paa_router)
+app.include_router(paar_router)
+app.include_router(pah_router)
 # app.include_router(pfi_router)
 # app.include_router(trf_router)
 
@@ -369,10 +369,21 @@ async def get_stats(username: str = Depends(verify_admin)):
 
                 // Function to update the monthly chart with new data
                 function updateMonthlyChart(data) {
-                    const months = Object.keys(data.monthly).sort();
+                    const parseDate = (dateStr) => {
+                        const [month, year] = dateStr.split('/');
+                        return new Date(year, parseInt(month) - 1, 1);
+                    };
+
+                    const now = new Date();
+                    const twoYearsAgo = new Date(now.getFullYear() - 2, now.getMonth(), 1);
+
+                    const months = Object.keys(data.monthly)
+                        .filter(monthStr => parseDate(monthStr) >= twoYearsAgo)
+                        .sort((a, b) => parseDate(a) - parseDate(b));
+
                     const requestCounts = months.map(month => data.monthly[month]);
 
-                    perMonthChart.data.labels = months;
+                    perMonthChart.data.labels = months; // Mantém os labels originais (MM/YYYY)
                     perMonthChart.data.datasets[0].data = requestCounts;
                     perMonthChart.update();
                 }

@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 from typing import List, Optional, Any
 from datetime import date, datetime
 
@@ -210,9 +210,9 @@ class PaginatedPlanoAcaoAnaliseResponse(PaginatedResponseTemplate):
 
 
 class PlanoAcaoAnaliseResponsavelResponse(BaseModel):
-    model_config = ConfigDict(from_attributes=True, arbitrary_types_allowed=True, extra="forbid")
+    model_config = ConfigDict(from_attributes=True, arbitrary_types_allowed=True, extra="forbid", populate_by_name=True)
     
-    plano_acao_analise_fk: Optional[int]
+    plano_acao_analise_fk: Optional[int] = Field(alias="id_analise_plano_acao")
     nome_responsavel_analise_plano_acao: Optional[str]
     cargo_responsavel_analise_plano_acao: Optional[str]
 
