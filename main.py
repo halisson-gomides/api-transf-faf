@@ -33,9 +33,10 @@ from src.routers.plano_acao_destinacao_recursos import padr_router
 from src.routers.plano_acao_analise import paa_router
 from src.routers.plano_acao_analise_responsavel import paar_router
 from src.routers.plano_acao_historico import pah_router
-# from src.routers.programacao_financeira import pfi_router
-# from src.routers.trf import trf_router
-
+from src.routers.termo_adesao import ta_router
+from src.routers.termo_adesao_historico import tah_router
+from src.routers.gestao_financeira_lancamentos import gfl_router
+from src.routers.gestao_financeira_subtransacoes import gfs_router
 
 # Configuração do logger
 logging.basicConfig(level=logging.INFO)
@@ -126,8 +127,10 @@ app.include_router(padr_router)
 app.include_router(paa_router)
 app.include_router(paar_router)
 app.include_router(pah_router)
-# app.include_router(pfi_router)
-# app.include_router(trf_router)
+app.include_router(ta_router)
+app.include_router(tah_router)
+app.include_router(gfl_router)
+app.include_router(gfs_router)
 
 
 @app.get("/docs", include_in_schema=False)
