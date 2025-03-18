@@ -382,8 +382,8 @@ class RelatorioGestaoAnaliseResponsavel(BaseModel, table=True):
     __tablename__ = "relatorio_gestao_analise_responsavel"
     
     relatorio_gestao_analise_fk: int = Field(foreign_key=f"{db_schema}.relatorio_gestao_analise.id_relatorio_gestao_analise", primary_key=True)
-    nome_responsavel_analise_relatorio_gestao_analise: str
-    cargo_responsavel_analise_relatorio_gestao_analise: str
+    nome_responsavel_analise_relatorio_gestao_analise: str = Field(primary_key=True)
+    cargo_responsavel_analise_relatorio_gestao_analise: str = Field(primary_key=True)
 
 
 # Tabela termo_adesao

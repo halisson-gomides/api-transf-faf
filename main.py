@@ -37,6 +37,14 @@ from src.routers.termo_adesao import ta_router
 from src.routers.termo_adesao_historico import tah_router
 from src.routers.gestao_financeira_lancamentos import gfl_router
 from src.routers.gestao_financeira_subtransacoes import gfs_router
+from src.routers.gestao_financeira_categorias_despesa import gfcd_router
+from src.routers.empenho import em_router
+from src.routers.relatorio_gestao import rg_router
+from src.routers.relatorio_gestao_acoes import rga_router
+from src.routers.relatorio_gestao_analise import rgan_router
+from src.routers.relatorio_gestao_analise_responsavel import rgra_router
+
+
 
 # Configuração do logger
 logging.basicConfig(level=logging.INFO)
@@ -131,6 +139,12 @@ app.include_router(ta_router)
 app.include_router(tah_router)
 app.include_router(gfl_router)
 app.include_router(gfs_router)
+app.include_router(gfcd_router)
+app.include_router(em_router)
+app.include_router(rg_router)
+app.include_router(rga_router)
+app.include_router(rgan_router)
+app.include_router(rgra_router)
 
 
 @app.get("/docs", include_in_schema=False)

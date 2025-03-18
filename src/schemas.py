@@ -439,9 +439,9 @@ class PaginatedRelatorioGestaoAnaliseResponse(PaginatedResponseTemplate):
 
 
 class RelatorioGestaoAnaliseResponsavelResponse(BaseModel):
-    model_config = ConfigDict(from_attributes=True, arbitrary_types_allowed=True, extra="forbid")
+    model_config = ConfigDict(from_attributes=True, arbitrary_types_allowed=True, extra="forbid", populate_by_name=True)
 
-    relatorio_gestao_analise_fk: Optional[int]
+    relatorio_gestao_analise_fk: Optional[int] = Field(alias="id_relatorio_gestao_analise")
     nome_responsavel_analise_relatorio_gestao_analise: Optional[str]
     cargo_responsavel_analise_relatorio_gestao_analise: Optional[str]
 
