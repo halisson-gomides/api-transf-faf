@@ -13,7 +13,13 @@ from cashews.contrib.fastapi import (
 from collections import defaultdict
 from src.database import Database
 from src.cache import setup_cache
-from src.utils import reset_minute_counters, verify_admin, config, save_stats
+from src.utils import (
+    reset_minute_counters, 
+    verify_admin, 
+    config, 
+    save_stats,
+    get_allowed_stats_paths
+)
 import asyncio
 import psutil
 import json
@@ -52,10 +58,26 @@ logger = logging.getLogger(__name__)
 
 # Initialize instances
 db = Database()
+# Set root path const
+ROOTPATH = "/api-faf"
 # Initialize a dictionary to store request counts and timings
 request_stats = defaultdict(lambda: {"count": 0, "total_time": 0, "last_minute_count": 0, "up_time": 0})
 monthly_stats = defaultdict(int)
-excluded_stats_paths = ["/", "/stats", "/docs", "/static/icon.jpg", "/openapi.json", "/favicon.ico"]
+# Initialize allowed_stats_paths with a default set of paths
+# These will be updated after the server is running
+allowed_stats_paths = []
+
+# Background task to update allowed paths
+async def update_allowed_paths(logger):
+    try:
+        global allowed_stats_paths
+        new_paths = await get_allowed_stats_paths(root_path=ROOTPATH, logger=logger)
+        if new_paths:
+            allowed_stats_paths = new_paths
+            logger.info(f"Updated allowed stats paths: {allowed_stats_paths}")
+    except Exception as e:
+        logger.error(f"Error updating allowed paths: {str(e)}")
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -66,6 +88,8 @@ async def lifespan(app: FastAPI):
         await db.init_db()        
         # Configure o cache
         setup_cache(config)
+        # background task to Update allowed paths for stats
+        update_paths_task = asyncio.create_task(update_allowed_paths(logger))
         # background task to reset the "last minute" counters every 60 seconds.
         reset_task = asyncio.create_task(reset_minute_counters(request_stats))
         save_task = asyncio.create_task(save_stats(monthly_stats))
@@ -79,6 +103,7 @@ async def lifespan(app: FastAPI):
     yield
     # load after the app has finished
     # Shutdown: Cancel the background task
+    update_paths_task.cancel()
     reset_task.cancel()
     save_task.cancel()
     try:
@@ -94,8 +119,10 @@ app = FastAPI(lifespan=lifespan,
               description=config.APP_DESCRIPTION,
               openapi_tags=config.APP_TAGS,
               default_response_class=ORJSONResponse,              
+              root_path=ROOTPATH,
               swagger_ui_parameters={"defaultModelExpandDepth": -1})
 app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount(f"{ROOTPATH}/static", StaticFiles(directory="static"), name="static_prefixed")
 
 # Incluindo Middlewares
 app.add_middleware(CacheEtagMiddleware)
@@ -109,16 +136,19 @@ async def track_requests(request: Request, call_next):
     process_time = time.time() - start_time
     
     # Update stats
-    path = request.url.path
-    if path in excluded_stats_paths:
+    _path = request.url.path
+    
+    # If allowed_stats_paths is empty, track all paths
+    # Otherwise, only track paths in the allowed list
+    if allowed_stats_paths and _path not in allowed_stats_paths:
         return response
     
     _curr_date = dt.datetime.now(tz=dt.timezone(dt.timedelta(hours=-3)))
     _curr_month = _curr_date.strftime("%m/%Y")
     monthly_stats[_curr_month] += 1
-    request_stats[path]["count"] += 1
-    request_stats[path]["total_time"] += process_time
-    request_stats[path]["last_minute_count"] += 1
+    request_stats[_path]["count"] += 1
+    request_stats[_path]["total_time"] += process_time
+    request_stats[_path]["last_minute_count"] += 1
     
     return response
 
@@ -150,15 +180,15 @@ app.include_router(rgra_router)
 @app.get("/docs", include_in_schema=False)
 async def swagger_ui_html():
     return get_swagger_ui_html(
-        openapi_url="/openapi.json",
+        openapi_url=f"{ROOTPATH}/openapi.json",
         title=config.APP_NAME + " - Documentação",        
-        swagger_favicon_url="/static/icon.jpg"
+        swagger_favicon_url=f"{ROOTPATH}/static/icon.jpg"
     )
 
 
 @app.get("/", include_in_schema=False)
 async def docs_redirect():
-    return RedirectResponse(url='/docs')
+    return RedirectResponse(url=f'{ROOTPATH}/docs')
 
 
 @app.get("/stats", include_in_schema=False, response_class=HTMLResponse)
@@ -238,13 +268,16 @@ async def get_stats(username: str = Depends(verify_admin)):
                     <tbody>
         """
 
-    for path, stats in request_stats.items():   
-        if path in excluded_stats_paths:
+    for _path, stats in request_stats.items():   
+        # If allowed_stats_paths is empty, show all paths
+        # Otherwise, only show paths in the allowed list
+        if allowed_stats_paths and _path not in allowed_stats_paths:
             continue     
         avg_time = stats["total_time"] / stats["count"] if stats["count"] > 0 else 0
+        _endpoint = _path.split('/')[-1]
         html_content += f"""
-                <tr data-path="{path}">
-                    <td>{path}</td>
+                <tr data-path="{_endpoint}">
+                    <td>{_endpoint}</td>
                     <td>{stats['count']}</td>
                     <td>{stats['last_minute_count']}</td>
                     <td>{avg_time * 1000:.2f}</td>
@@ -362,7 +395,11 @@ async def get_stats(username: str = Depends(verify_admin)):
                 });
 
                 // Initialize WebSocket connection
-                const socket = new WebSocket("ws://localhost:8000/ws");
+                const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+                const host = window.location.host;
+                const basePath = '/api-faf'; // O prefixo da sua aplicação
+                const socket = new WebSocket(`${protocol}//${host}${basePath}/ws`);
+                //const socket = new WebSocket("ws://localhost:8000/ws");
 
                 // Handle WebSocket messages
                 socket.onmessage = function(event) {
@@ -453,11 +490,12 @@ async def stats_ws(websocket: WebSocket):
             await asyncio.sleep(1)
             stats_data = {
                 "endpoints": {
-                    path: {
+                    _path.split('/')[-1]: {
                         "count": stats["count"],
                         "last_minute_count": stats["last_minute_count"],
                         "avg_time": (stats["total_time"] / stats["count"] if stats["count"] > 0 else 0) * 1000
-                    } for path, stats in request_stats.items() if path not in excluded_stats_paths
+                    } for _path, stats in request_stats.items() 
+                      if not allowed_stats_paths or _path in allowed_stats_paths
                 },
                 "system": {
                     "cpu": psutil.cpu_percent(),
