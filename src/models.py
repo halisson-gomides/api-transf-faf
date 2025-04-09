@@ -246,7 +246,7 @@ class PlanoAcaoMeta(BaseModel, table=True):
     valor_meta_plano_acao: float
     versao_meta_plano_acao: int
     sequencial_meta_plano_acao: int
-    id_plano_acao: int = Field(foreign_key=f"{db_schema}.plano_acao.id_plano_acao", primary_key=True)
+    id_plano_acao: int = Field(foreign_key=f"{db_schema}.plano_acao.id_plano_acao")
 
 
 # Tabela plano_acao_meta_acao
