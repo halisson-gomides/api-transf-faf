@@ -90,7 +90,7 @@ class GestaoFinanceiraLancamentos(BaseModel, table=True):
     codigo_conta_favorecido_gestao_financeira: str
     dv_conta_favorecido_gestao_financeira: str
     valor_lancamento_gestao_financeira: float
-    id_categoria_despesa_gestao_financeira: int = Field(foreign_key=f"{db_schema}.gestao_financeira_categorias_despesa.id_categoria_despesa_gestao_financeira", primary_key=True)
+    id_categoria_despesa_gestao_financeira: int = Field(foreign_key=f"{db_schema}.gestao_financeira_categorias_despesa.id_categoria_despesa_gestao_financeira")
     quantidade_subtransacoes_lancamento_gestao_financeira: int
     id_agencia_conta: str
 
@@ -113,8 +113,8 @@ class GestaoFinanceiraSubtransacoes(BaseModel, table=True):
     codigo_conta_beneficiario_subtransacao_gestao_financeira: str
     descricao_subtransacao_gestao_financeira: str
     valor_subtransacao_gestao_financeira: float
-    id_categoria_despesa_gestao_financeira: int = Field(foreign_key=f"{db_schema}.gestao_financeira_categorias_despesa.id_categoria_despesa_gestao_financeira", primary_key=True)
-    id_lancamento_gestao_financeira: int = Field(foreign_key=f"{db_schema}.gestao_financeira_lancamentos.id_lancamento_gestao_financeira", primary_key=True)
+    id_categoria_despesa_gestao_financeira: int = Field(foreign_key=f"{db_schema}.gestao_financeira_categorias_despesa.id_categoria_despesa_gestao_financeira")
+    id_lancamento_gestao_financeira: int = Field(foreign_key=f"{db_schema}.gestao_financeira_lancamentos.id_lancamento_gestao_financeira")
 
 
 # Tabela plano_acao
