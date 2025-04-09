@@ -3,7 +3,7 @@ from decimal import Decimal
 from sqlmodel import Field, SQLModel
 from typing import Optional
 
-db_schema = 'api_transferegov_fundoafundo'
+db_schema = 'api_transferegov_faf'
 
 class BaseModel(SQLModel, table=False):
     __table_args__ = {"schema": db_schema}
