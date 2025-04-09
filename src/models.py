@@ -188,7 +188,7 @@ class PlanoAcaoAnalise(BaseModel, table=True):
 class PlanoAcaoAnaliseResponsavel(BaseModel, table=True):
     __tablename__ = "plano_acao_analise_responsavel"
     
-    plano_acao_analise_fk: int = Field(foreign_key=f"{db_schema}.plano_acao_analise.id_analise_plano_acao", primary_key=True)
+    plano_acao_analise_fk: int = Field(foreign_key=f"{db_schema}.plano_acao_analise.id_analise_plano_acao")
     nome_responsavel_analise_plano_acao: str = Field(primary_key=True)
     cargo_responsavel_analise_plano_acao: str = Field(primary_key=True)
 
@@ -209,7 +209,7 @@ class PlanoAcaoDadoBancario(BaseModel, table=True):
     data_abertura_conta_plano_acao_dado_bancario: date
     nome_programa_agil_conta_plano_acao_dado_bancario: str
     saldo_final_conta_plano_acao_dado_bancario: float
-    id_plano_acao: int = Field(foreign_key=f"{db_schema}.plano_acao.id_plano_acao", primary_key=True)
+    id_plano_acao: int = Field(foreign_key=f"{db_schema}.plano_acao.id_plano_acao")
 
 
 # Tabela plano_acao_destinacao_recursos
@@ -221,7 +221,7 @@ class PlanoAcaoDestinacaoRecursos(BaseModel, table=True):
     descricao_natureza_despesa_destinacao_recursos_plano_acao: str
     tipo_despesa_destinacao_recursos_plano_acao: str
     valor_destinacao_recursos_plano_acao: float
-    id_plano_acao: int = Field(foreign_key=f"{db_schema}.plano_acao.id_plano_acao", primary_key=True)
+    id_plano_acao: int = Field(foreign_key=f"{db_schema}.plano_acao.id_plano_acao")
 
 
 # Tabela plano_acao_historico
@@ -232,7 +232,7 @@ class PlanoAcaoHistorico(BaseModel, table=True):
     situacao_historico_plano_acao: str
     data_historico_plano_acao: date
     versao_historico_plano_acao: int
-    id_plano_acao: int = Field(foreign_key=f"{db_schema}.plano_acao.id_plano_acao", primary_key=True)
+    id_plano_acao: int = Field(foreign_key=f"{db_schema}.plano_acao.id_plano_acao")
 
 
 # Tabela plano_acao_meta
@@ -260,7 +260,7 @@ class PlanoAcaoMetaAcao(BaseModel, table=True):
     valor_acao_meta_plano_acao: float
     versao_acao_meta_plano_acao: int
     sequencial_acao_meta_plano_acao: int
-    id_meta_plano_acao: int = Field(foreign_key=f"{db_schema}.plano_acao_meta.id_meta_plano_acao", primary_key=True)
+    id_meta_plano_acao: int = Field(foreign_key=f"{db_schema}.plano_acao_meta.id_meta_plano_acao")
 
 
 # Tabela programa
@@ -315,7 +315,7 @@ class ProgramaBeneficiario(BaseModel, table=True):
     nome_parlamentar_beneficiario_programa: str
     tipo_beneficiario_programa: str
     uf_beneficiario_programa: str
-    id_programa: int = Field(foreign_key=f"{db_schema}.programa.id_programa", primary_key=True)
+    id_programa: int = Field(foreign_key=f"{db_schema}.programa.id_programa")
 
 
 # Tabela programa_gestao_agil
@@ -330,7 +330,7 @@ class ProgramaGestaoAgil(BaseModel, table=True):
     sigla_orgao_programa_agil: str
     cnpj_orgao_programa_agil: str
     nome_orgao_programa_agil: str
-    id_programa: int = Field(foreign_key=f"{db_schema}.programa.id_programa", primary_key=True)
+    id_programa: int = Field(foreign_key=f"{db_schema}.programa.id_programa")
 
 
 # Tabela relatorio_gestao
@@ -349,7 +349,7 @@ class RelatorioGestao(BaseModel, table=True):
     contrapartida_relatorio_gestao: str
     endereco_eletronico_publicidade_acoes_relatorio_gestao: str
     declaracao_conformidade_relatorio_gestao: bool
-    id_plano_acao: int = Field(foreign_key=f"{db_schema}.plano_acao.id_plano_acao", primary_key=True)
+    id_plano_acao: int = Field(foreign_key=f"{db_schema}.plano_acao.id_plano_acao")
 
 
 # Tabela relatorio_gestao_acoes
@@ -359,8 +359,8 @@ class RelatorioGestaoAcoes(BaseModel, table=True):
     id_acao_relatorio_gestao: int = Field(primary_key=True)
     percentual_execucao_fisica_acao_relatorio_gestao_acao: str
     observacoes_justificativas_relatorio_gestao_acao: str
-    id_relatorio_gestao: int = Field(foreign_key=f"{db_schema}.relatorio_gestao.id_relatorio_gestao", primary_key=True)
-    id_acao_meta_plano_acao: int = Field(foreign_key=f"{db_schema}.plano_acao_meta.id_meta_plano_acao", primary_key=True)
+    id_relatorio_gestao: int = Field(foreign_key=f"{db_schema}.relatorio_gestao.id_relatorio_gestao")
+    id_acao_meta_plano_acao: int = Field(foreign_key=f"{db_schema}.plano_acao_meta.id_meta_plano_acao")
 
 
 # Tabela relatorio_gestao_analise
@@ -374,14 +374,14 @@ class RelatorioGestaoAnalise(BaseModel, table=True):
     origem_analise_relatorio_gestao_analise: str
     data_analise_relatorio_gestao_analise: date
     versao_analise_relatorio_gestao_analise: int
-    id_relatorio_gestao: int = Field(foreign_key=f"{db_schema}.relatorio_gestao.id_relatorio_gestao", primary_key=True)
+    id_relatorio_gestao: int = Field(foreign_key=f"{db_schema}.relatorio_gestao.id_relatorio_gestao")
 
 
 # Tabela relatorio_gestao_analise_responsavel
 class RelatorioGestaoAnaliseResponsavel(BaseModel, table=True):
     __tablename__ = "relatorio_gestao_analise_responsavel"
     
-    relatorio_gestao_analise_fk: int = Field(foreign_key=f"{db_schema}.relatorio_gestao_analise.id_relatorio_gestao_analise", primary_key=True)
+    relatorio_gestao_analise_fk: int = Field(foreign_key=f"{db_schema}.relatorio_gestao_analise.id_relatorio_gestao_analise")
     nome_responsavel_analise_relatorio_gestao_analise: str = Field(primary_key=True)
     cargo_responsavel_analise_relatorio_gestao_analise: str = Field(primary_key=True)
 
@@ -399,7 +399,7 @@ class TermoAdesao(BaseModel, table=True):
     secao_publicacao_dou_termo_adesao: int
     pagina_publicacao_dou_termo_adesao: int
     data_publicacao_dou_termo_adesao: date
-    id_plano_acao: int = Field(foreign_key=f"{db_schema}.plano_acao.id_plano_acao", primary_key=True)
+    id_plano_acao: int = Field(foreign_key=f"{db_schema}.plano_acao.id_plano_acao")
 
 
 # Tabela termo_adesao_historico
@@ -409,4 +409,4 @@ class TermoAdesaoHistorico(BaseModel, table=True):
     id_historico_termo_adesao: int = Field(primary_key=True)
     situacao_historico_termo_adesao: str
     data_historico_termo_adesao: date
-    id_termo_adesao: int = Field(foreign_key=f"{db_schema}.termo_adesao.id_termo_adesao", primary_key=True)
+    id_termo_adesao: int = Field(foreign_key=f"{db_schema}.termo_adesao.id_termo_adesao")
