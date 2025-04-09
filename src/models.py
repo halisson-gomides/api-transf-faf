@@ -49,7 +49,7 @@ class GestaoFinanceiraCategoriasDespesa(BaseModel, table=True):
     __tablename__ = "gestao_financeira_categorias_despesa"
     
     id_categoria_despesa_gestao_financeira: int = Field(primary_key=True)
-    id_nivel_pai_categoria_despesa_gestao_financeira: int = Field(primary_key=True)
+    id_nivel_pai_categoria_despesa_gestao_financeira: int
     nome_nivel_atual_categoria_despesa_gestao_financeira: str
     nivel_atual_categoria_despesa_gestao_financeira: int
     nome_completo_niveis_categoria_despesa_gestao_financeira: str
