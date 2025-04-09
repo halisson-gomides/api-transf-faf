@@ -180,7 +180,7 @@ class PlanoAcaoAnalise(BaseModel, table=True):
     data_analise_plano_acao: date
     parecer_analise_plano_acao: str
     tipo_origem_analise_plano_acao: str
-    id_plano_acao: int = Field(foreign_key=f"{db_schema}.plano_acao.id_plano_acao", primary_key=True)
+    id_plano_acao: int = Field(foreign_key=f"{db_schema}.plano_acao.id_plano_acao")
     id_historico_plano_acao: int
 
 
