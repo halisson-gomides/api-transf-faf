@@ -167,7 +167,7 @@ class PlanoAcao(BaseModel, table=True):
     uf_fundo_recebedor_plano_acao: str
     municipio_fundo_recebedor_plano_acao: str
     codigo_ibge_fundo_recebedor_plano_acao: int
-    id_programa: int = Field(foreign_key=f"{db_schema}.programa.id_programa", primary_key=True)
+    id_programa: int = Field(foreign_key=f"{db_schema}.programa.id_programa")
 
 
 # Tabela plano_acao_analise
