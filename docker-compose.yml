@@ -16,8 +16,12 @@ services:
       - "traefik.http.routers.api-faf.rule=PathPrefix(`/api-faf`)"
       - "traefik.http.routers.api-faf.entrypoints=web"
       - "traefik.http.services.api-faf.loadbalancer.server.port=8000"
-      - "traefik.http.middlewares.api-faf-strip.stripprefix.prefixes=/api-faf"
-      - "traefik.http.routers.api-faf.middlewares=api-faf-strip"
+        # Adicione esta configuração para WebSockets
+      - "traefik.http.middlewares.api-faf-ws.headers.customRequestHeaders.X-Forwarded-Proto=ws"
+      - "traefik.http.routers.api-faf-ws.rule=PathPrefix(`/api-faf/ws`)"
+      - "traefik.http.routers.api-faf-ws.entrypoints=web"
+      - "traefik.http.routers.api-faf-ws.service=api-faf"
+      - "traefik.http.routers.api-faf-ws.middlewares=api-faf-ws"
 
   redis:
     container_name: cache-faf
