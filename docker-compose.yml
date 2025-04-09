@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: app-faf
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/app
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@postgres-shared:5432/api-transferegov
+      - REDIS_URL=redis://cache-faf:6379/0
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api-faf.rule=PathPrefix(`/api-faf`)"
+      - "traefik.http.routers.api-faf.entrypoints=web"
+      - "traefik.http.services.api-faf.loadbalancer.server.port=8000"
+      - "traefik.http.middlewares.api-faf-strip.stripprefix.prefixes=/api-faf"
+      - "traefik.http.routers.api-faf.middlewares=api-faf-strip"
+
+  redis:
+    container_name: cache-faf
+    image: redis:alpine
+    restart: unless-stopped
+    volumes:
+      - redis-data:/data
+
+volumes:
+  redis-data:
+
+networks:
+  default:
+    name: web-apps
+    external: true
