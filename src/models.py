@@ -41,7 +41,7 @@ class Empenho(BaseModel, table=True):
     descricao_situacao_empenho: str
     valor_empenho: float
     versao_empenho: int
-    id_plano_acao: int = Field(foreign_key=f"{db_schema}.plano_acao.id_plano_acao", primary_key=True)
+    id_plano_acao: int = Field(foreign_key=f"{db_schema}.plano_acao.id_plano_acao")
 
 
 # Tabela gestao_financeira_categorias_despesa
