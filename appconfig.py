@@ -98,7 +98,7 @@ class Settings(BaseSettings):
             "description": "Dados relativos aos Responsáveis pela Análise do Relatório de Gestão - FaF",
         },
     ]
-    DEFAULT_PAGE_SIZE: int = 10
+    DEFAULT_PAGE_SIZE: int = 100
     MAX_PAGE_SIZE: int = 1000
     ERROR_MESSAGE_NO_PARAMS: str = "Nenhum parâmetro de consulta foi informado."
     ERROR_MESSAGE_INTERNAL: str = "Erro Interno Inesperado."
